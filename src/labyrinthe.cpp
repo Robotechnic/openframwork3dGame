@@ -158,6 +158,10 @@ bool Labyrinthe::playerColision(ofVec3f size, ofVec3f position, ofVec3f &moove){
     return false;
 }
 
+ofVec3f Labyrinthe:rectangleLineColision(ofRectangle rect, ofVec3f start, ofVec3f end) {
+
+}
+
 void Labyrinthe::draw() {
     m.draw();
 }
