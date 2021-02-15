@@ -1,10 +1,14 @@
 #pragma once
 
-#include "ofMain.h"
+#include <ofBaseApp.h>
 #include <of3dPrimitives.h>
-#include <ofEasyCam.h>
+#include <ofCamera.h>
 #include <ofTexture.h>
 #include "labyrinthe.h"
+#include "player.h"
+#include "ofxMouseController.h"
+#include <ofLight.h>
+#include <ofTrueTypeFont.h>
 
 class ofApp : public ofBaseApp{
 
@@ -26,9 +30,15 @@ class ofApp : public ofBaseApp{
         void gotMessage(ofMessage msg);
 
     private:
-        ofEasyCam cam;
-        ofSpherePrimitive p;
+        ofCamera cam;
+        Player p;
+
         Labyrinthe l;
         ofTexture text;
+        ofTrueTypeFont infoDisplay;
+
+
+        int lastX,lastY;
+        bool setCenter;
 
 };

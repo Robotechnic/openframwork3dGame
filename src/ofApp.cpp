@@ -2,25 +2,57 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    p.setRadius(20);
-    ofEnableDepthTest();
-    l = Labyrinthe(20);
+    l = Labyrinthe(30);
     l.loadLayout("lab1");
     l.generate();
     ofLoadImage(this->text,"textures.png");
     ofEnableNormalizedTexCoords();
+    ofEnableAntiAliasing();
 
-    //ofHideCursor();
+    infoDisplay.load("verdana.ttf",15);
+
+    //center mouse
+    setCenter = true;
+    ofxMouseController::setPos(ofGetWindowPositionX()+ofGetWidth()/2,ofGetWindowPositionY()+ofGetHeight()/2);
+    ofHideCursor();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    //fist, update playqer movement with keyboard
+    if (ofGetKeyPressed(' ')){
+        p.moove(Player::UP);
+    }
 
+    if (ofGetKeyPressed(OF_KEY_SHIFT)){
+        p.moove(Player::DOWN);
+    }
+
+    if (ofGetKeyPressed('z')){
+        p.moove(Player::FORWARD);
+    }
+
+    if (ofGetKeyPressed('s')){
+        p.moove(Player::BACKWARD);
+    }
+
+    if (ofGetKeyPressed('q')){
+        p.moove(Player::LEFT);
+    }
+
+    if (ofGetKeyPressed('d')){
+        p.moove(Player::RIGHT);
+    }
+
+    p.evolve(&l);
+    //update camera position
+    cam.setPosition(p.getPosition());
+    cam.lookAt(p.getLook());
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    ofEnableDepthTest();
     cam.begin();
     ofSetColor(255,0,0);
     ofDrawLine(0,0,0,100,0,0);
@@ -33,42 +65,17 @@ void ofApp::draw(){
     this->text.bind();
     l.draw();
     this->text.unbind();
+    //p.draw();
     cam.end();
+
+    ofDisableDepthTest();
+    infoDisplay.drawString(ofToString(ofGetFrameRate()),10,10);
+    infoDisplay.drawString(ofToString(p.getPosition()),10,30);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    ofVec3f pos = cam.getPosition();
-    switch (key) {
-        case 'z':
-            pos.y += 5;
-            cam.setPosition(pos);
-            break;
-        case 's':
-            pos.y -= 5;
-            cam.setPosition(pos);
-            break;
 
-        case 'd':
-            pos.x += 5;
-            cam.setPosition(pos);
-            break;
-
-        case 'q':
-            pos.x -= 5;
-            cam.setPosition(pos);
-            break;
-
-        case OF_KEY_SHIFT:
-            pos.z -= 5;
-            cam.setPosition(pos);
-            break;
-
-        case ' ':
-            pos.z += 5;
-            cam.setPosition(pos);
-            break;
-    }
 }
 
 //--------------------------------------------------------------
@@ -78,7 +85,18 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
+    //if mouse is not center
+    if ((x != ofGetWidth()/2 || y != ofGetWidth()/2) && !setCenter){
+        p.changeDirection(x-lastX,y-lastY);
+        lastX = x;
+        lastY = y;
+        ofxMouseController::setPos(ofGetWindowPositionX()+ofGetWidth()/2,ofGetWindowPositionY()+ofGetHeight()/2);
+        setCenter = true;
+    } else {
+        setCenter = false;
+        lastX = ofGetWidth()/2;
+        lastY = ofGetHeight()/2;
+    }
 }
 
 //--------------------------------------------------------------

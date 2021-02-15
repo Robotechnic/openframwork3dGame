@@ -40,8 +40,6 @@ bool Labyrinthe::loadLayout(string name){
     else
         return false;
 
-    ofLog()<<this->layout.size();
-
     return true;
 }
 
@@ -102,6 +100,62 @@ void Labyrinthe::generate() {
 
         }
     }
+}
+
+bool Labyrinthe::playerColision(ofVec3f size, ofVec3f position, ofVec3f &moove){
+    int width = this->layout.size()*this->caseSize;
+    int height = this->layout.at(0).size()*this->caseSize;
+
+    if (position.x > 0 && position.x<width && position.z > 0 && position.z < height){
+        int x = position.x / this->caseSize;
+        int y = position.z / this->caseSize;
+
+        size /= 2;
+        //simple floor colision for all tiles
+        if (position.y < 0 && moove.y >= -size.y){
+            moove.y = -size.y-1;
+            return true;
+        } else if (position.y > 0 && moove.y <= size.y){
+            moove.y = size.y+1;
+            return true;
+        }
+
+
+        //test for top of walls
+        if (this->layout.at(y).at(x).z == 1 && position.y > this->caseSize && moove.y <= this->caseSize+size.y){
+            moove.y = this->caseSize + size.y + 1;
+            return true;
+        }
+
+        //test for sides
+        if (position.y > 0 && position.y < this->caseSize){
+            int xp = moove.x / this->caseSize;
+            int yp = moove.z / this->caseSize;
+
+            if (yp >= 0 && yp < (int)this->layout.size() && xp >= 0 && xp < (int)this->layout.at(0).size())
+                if (this->layout.at(yp).at(xp).z == 1){
+                    //ofLog()<<x<<" "<<xp;
+                    if (x <= xp){
+                        moove.x = xp * caseSize;
+                    } else if (x > xp){
+                        moove.x = (xp + 1) * caseSize;
+                    }
+                }
+            xp = moove.x / this->caseSize;
+            yp = moove.z / this->caseSize;
+            if (yp >= 0 && yp < (int)this->layout.size() && xp >= 0 && xp < (int)this->layout.at(0).size())
+                if (this->layout.at(yp).at(xp).z == 1){
+                    if (y <= yp){
+                        ofLog()<<moove.z<<" "<<(yp * caseSize);
+                        moove.z = yp * caseSize;
+                    } else if (y > yp){
+                        moove.z = (yp + 1) * caseSize;
+                    }
+                }
+        }
+    }
+
+    return false;
 }
 
 void Labyrinthe::draw() {

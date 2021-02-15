@@ -17,10 +17,12 @@ Project{
             'src/ofApp.h',
             'src/labyrinthe.h',
             'src/labyrinthe.cpp',
+            'src/player.h',
+            'src/player.cpp',
         ]
 
         of.addons: [
-
+            "ofxMouseController"
         ]
 
         // additional flags for the project. the of module sets some
@@ -30,7 +32,7 @@ Project{
         of.includePaths: []     // include search paths
         of.cFlags: []           // flags passed to the c compiler
         of.cxxFlags: []         // flags passed to the c++ compiler
-        of.linkerFlags: []      // flags passed to the linker
+        of.linkerFlags: ["-lX11", "-lXtst", "-lXext"]      // flags passed to the linker
         of.defines: []          // defines are passed as -D to the compiler
         // and can be checked with #ifdef or #if in the code
         of.frameworks: []       // osx only, additional frameworks to link with the project

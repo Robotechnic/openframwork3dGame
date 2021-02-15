@@ -19,6 +19,9 @@ class Labyrinthe
         bool loadLayout(string name);
         void draw();
         void generate();
+
+        bool playerColision(ofVec3f size, ofVec3f position, ofVec3f &moove);
+
         int getWidth();
         int getHeight();
 
